@@ -60,44 +60,48 @@ void print_file(struct book *arr_struct, int line_file)
     fclose(file);
 }
 
-struct book * delete(struct book *arr_struct, int line_file, int number)
+void delete(struct book *arr_struct, int line_file, int number)
 {
-    struct book *arr = (struct book *) malloc((line_file--) * sizeof(struct book));//создаём массив для дублирования
-    int j = 0;
-    for (int i = 0; i < (line_file--); i++) {
-        if (j != number) {
-            strcpy(arr[i].ind, arr_struct[j].ind);
-            strcpy(arr[i].fio, arr_struct[j].fio);
-            strcpy(arr[i].name, arr_struct[j].name);
-            strcpy(arr[i].num1, arr_struct[j].num1);
-            strcpy(arr[i].num1, arr_struct[j].num1);
-            j++;
-        } else
-            j++;
+    struct book *arr = (struct book *)malloc((line_file--)*sizeof(struct book));
 
+    for (int i = 0; i<number; i++){
+        strcpy(arr[i].ind, arr_struct[i].ind);
+        strcpy(arr[i].fio, arr_struct[i].fio);
+        strcpy(arr[i].name, arr_struct[i].name);
+        strcpy(arr[i].num1, arr_struct[i].num1);
+        strcpy(arr[i].num2, arr_struct[i].num2);
     }
-    line_file--;
-    arr_struct = realloc(arr_struct, line_file * sizeof(struct book));
+    //пропускаем элемент с нужным индексом
+    for (int i = (number++); i<line_file; i++){
+        strcpy(arr[i].ind, arr_struct[i].ind);
+        strcpy(arr[i].fio, arr_struct[i].fio);
+        strcpy(arr[i].name, arr_struct[i].name);
+        strcpy(arr[i].num1, arr_struct[i].num1);
+        strcpy(arr[i].num2, arr_struct[i].num2);
+    }
+    for (int i = 0; i<(line_file--); i++){
+        printf ("%s,%s", arr[i].ind, arr[i].fio);
+    }
 
-    for (int i = 0; i < line_file; i++) {
+    arr_struct = realloc((arr_struct), (line_file--)*sizeof(struct book));
+    line_file--;
+    for (int i = 0; i<line_file; i++){
         strcpy(arr_struct[i].ind, arr[i].ind);
-        printf ("%s %s", arr[i].ind, arr_struct[i].ind);
         strcpy(arr_struct[i].fio, arr[i].fio);
         strcpy(arr_struct[i].name, arr[i].name);
         strcpy(arr_struct[i].num1, arr[i].num1);
-        strcpy(arr_struct[i].num1, arr[i].num1);
+        strcpy(arr_struct[i].num2, arr[i].num2);
     }
 
     free(arr);
-
-    return arr_struct;
-}
+}//что-то не робит
 
 void edit(struct book *arr_struct, int j){
     char str[1000], c;
     int i = 0;
     printf ("Book: %s %s %s %s %s\n", arr_struct[j].ind, arr_struct[j].fio, arr_struct[j].name, arr_struct[j].num1, arr_struct[j].num2);
     printf ("Enter new book details\n");
+    c = getchar();
     c = getchar();
     while ( c != '\n'){
         str[i] = c;
@@ -118,6 +122,10 @@ int main(){
     int line_file = line_f();//количество строчек в файле
     struct book *arr_struct = array(line_file);//запись в массив структур из файла
 
+    for (int i = 0; i<line_file; i++){
+        printf ("%s;%s;%s;%s;%s\n", arr_struct[i].ind, arr_struct[i].fio, arr_struct[i].name, arr_struct[i].num1, arr_struct[i].num2);
+    }
+
     printf ("Menu:\n"
             "1 - Add book(+)\n"
             "2 - Delete book(-)\n"
@@ -132,7 +140,7 @@ int main(){
     {
         print_file(arr_struct, line_file);//печать в файл массива структур
         break;
-    }
+    }//работает
 
     if (com == 1){//ДОБАВЛЕНИЕ КНИГИ
         char isbn[9];
@@ -160,7 +168,7 @@ int main(){
 
         } else
             printf ("The book is already there(error)\n");
-    }
+    }//работает
 
     if (com == 2){// УДАЛИТЬ КНИГУ
         char isbn[9];
@@ -168,17 +176,18 @@ int main(){
         printf ("Enter ISBN:\n");
         scanf ("%s", &isbn);//считываем индекс
         int f=0;//флаг
+        number = -1;
 
         for (int i = 0; i<line_file; i++){
             if (strcmp(isbn, arr_struct[i].ind) == 0) {//сравниваем индекс с индексами из массива
-                f = 1;
                 number = i;
             }
         }
 
-        if (f == 1) {//если книга имеется
-            arr_struct = delete(arr_struct, line_file, number);//удаление книги
-            print_file(arr_struct, line_file);
+        if (number != -1) {//если книга имеется
+            delete(arr_struct, line_file, number);//удаление книги
+            line_file--;
+            //print_file(arr_struct, line_file);
             printf ("Book deleted\n");
         }
         else
@@ -190,20 +199,19 @@ int main(){
         int number;//номер книги в списке
         printf ("Enter ISBN:\n");
         scanf ("%s", &isbn);//считываем индекс
-        int f=0, j;//флаг
+        int j = -1;//флаг
 
         for (int i = 0; i<line_file; i++){
             if (strcmp(isbn, arr_struct[i].ind) == 0) {//сравниваем индекс с индексами из массива
-                f = 1;
                 j = i;
             }
         }
-        if ( f == 1){
+        if ( j != 1){
             edit(arr_struct, j);
         } else
             printf ("No books in the library\n");
 
-    }
+    }//работает
 
     if (com == 4){
         char isbn[9];
@@ -235,7 +243,7 @@ int main(){
             itoa(num, arr_struct[number].num2, 10);
             printf ("Number of books changed\n");
         }
-    }
+    }//работает
     for (int i = 0; i<line_file; i++){
         printf ("%s;%s;%s;%s;%s\n", arr_struct[i].ind, arr_struct[i].fio, arr_struct[i].name, arr_struct[i].num1, arr_struct[i].num2);
     }
