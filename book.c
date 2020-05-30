@@ -5,7 +5,7 @@
 #include <windows.h>
 
 struct book {//структура книги
-    char ind[10];
+    char ind[11];
     char fio[150];
     char name[150];
     char num1[10];
@@ -37,7 +37,7 @@ struct book* array(int line_file){//сохдание массива структ
     char str[100];
 
     for (int i =0; i<line_file; i++){
-        fgets(str, 10, file);//почему-то только 9 чисел, НЕ ПОНИМАЮ
+        fgets(str, 11, file);//почему-то только 9 чисел, НЕ ПОНИМАЮ
         strcpy(arr_struct[i].ind, str);
         fgetc(file);
         fgets(str, 1000, file);
@@ -60,9 +60,9 @@ void print_file(struct book *arr_struct, int line_file)
     fclose(file);
 }
 
-void delete(struct book *arr_struct, int line_file, int number)
+struct book *delete(struct book *arr_struct, int line_file, int number)
 {
-    struct book *arr = (struct book *)malloc((line_file--)*sizeof(struct book));
+    struct book *arr = (struct book *)malloc((line_file-1)*sizeof(struct book));
 
     for (int i = 0; i<number; i++){
         strcpy(arr[i].ind, arr_struct[i].ind);
@@ -72,34 +72,28 @@ void delete(struct book *arr_struct, int line_file, int number)
         strcpy(arr[i].num2, arr_struct[i].num2);
     }
     //пропускаем элемент с нужным индексом
-    for (int i = (number++); i<line_file; i++){
-        strcpy(arr[i].ind, arr_struct[i].ind);
-        strcpy(arr[i].fio, arr_struct[i].fio);
-        strcpy(arr[i].name, arr_struct[i].name);
-        strcpy(arr[i].num1, arr_struct[i].num1);
-        strcpy(arr[i].num2, arr_struct[i].num2);
+    for (int i = (number+1); i<line_file; i++){
+        strcpy(arr[i-1].ind, arr_struct[i].ind);
+        strcpy(arr[i-1].fio, arr_struct[i].fio);
+        strcpy(arr[i-1].name, arr_struct[i].name);
+        strcpy(arr[i-1].num1, arr_struct[i].num1);
+        strcpy(arr[i-1].num2, arr_struct[i].num2);
     }
-    for (int i = 0; i<(line_file--); i++){
+    for (int i = 0; i<(line_file-1); i++){
         printf ("%s,%s", arr[i].ind, arr[i].fio);
     }
 
-    arr_struct = realloc((arr_struct), (line_file--)*sizeof(struct book));
-    line_file--;
-    for (int i = 0; i<line_file; i++){
-        strcpy(arr_struct[i].ind, arr[i].ind);
-        strcpy(arr_struct[i].fio, arr[i].fio);
-        strcpy(arr_struct[i].name, arr[i].name);
-        strcpy(arr_struct[i].num1, arr[i].num1);
-        strcpy(arr_struct[i].num2, arr[i].num2);
-    }
 
-    free(arr);
-}//что-то не робит
+    free(arr_struct);
+    return arr;
+
+
+}
 
 void edit(struct book *arr_struct, int j){
     char str[1000], c;
     int i = 0;
-    printf ("Book: %s %s %s %s %s\n", arr_struct[j].ind, arr_struct[j].fio, arr_struct[j].name, arr_struct[j].num1, arr_struct[j].num2);
+    printf ("Book: %s;%s;%s;%s;%s\n", arr_struct[j].ind, arr_struct[j].fio, arr_struct[j].name, arr_struct[j].num1, arr_struct[j].num2);
     printf ("Enter new book details\n");
     c = getchar();
     c = getchar();
@@ -174,7 +168,7 @@ int main(){
         char isbn[9];
         int number;//номер книги в списке
         printf ("Enter ISBN:\n");
-        scanf ("%s", &isbn);//считываем индекс
+        scanf ("%s", isbn);//считываем индекс
         int f=0;//флаг
         number = -1;
 
@@ -185,14 +179,14 @@ int main(){
         }
 
         if (number != -1) {//если книга имеется
-            delete(arr_struct, line_file, number);//удаление книги
+            arr_struct = delete(arr_struct, line_file, number);//удаление книги
             line_file--;
             //print_file(arr_struct, line_file);
             printf ("Book deleted\n");
         }
         else
             printf ("No books in the library\n");
-    }
+    }//работает
 
     if (com == 3){// РЕДАКТИРОВАТЬ КНИГУ
         char isbn[9];
@@ -250,3 +244,4 @@ int main(){
 }
     free(arr_struct);
     return 0;
+}
