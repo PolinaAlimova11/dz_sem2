@@ -72,10 +72,6 @@ struct book *delete(struct book *arr_struct, int line_file, int number)
         strcpy(arr[i-1].num1, arr_struct[i].num1);
         strcpy(arr[i-1].num2, arr_struct[i].num2);
     }
-    for (int i = 0; i<(line_file-1); i++){
-        printf ("%s,%s", arr[i].ind, arr[i].fio);
-    }
-
 
     free(arr_struct);
     return arr;
@@ -222,8 +218,6 @@ int main() {
 
     int line_us = line_f(file_us);
     struct user *arr_user = array_user(line_us);
-    for (int i = 0; i < line_us; i++)
-        printf("%s;%s;%c;%c\n", arr_user[i].log, arr_user[i].pass, arr_user[i].stud, arr_user[i].book);
 
     fclose(file_us);
 
@@ -246,7 +240,6 @@ int main() {
             bk = arr_user[i].book;
         }
     }
-    printf("%c,%c\n", st, bk);
     if (f == -1) {
         printf("User is not found\n");
     } else {
@@ -261,11 +254,6 @@ int main() {
                 printf("Error opening file\n");
             }
             struct student *arr_struct_st = array_student(line_file_student);//запись в массив структур из файла
-
-            for (int i = 0; i < line_file_student; i++) {
-                printf("%s;%s;%s;%s;%s;%s\n", arr_struct_st[i].zach, arr_struct_st[i].famil, arr_struct_st[i].name,
-                       arr_struct_st[i].otch, arr_struct_st[i].fak, arr_struct_st[i].spec);
-            }
 
             printf("Menu:\n"
                    "1 - Add student(+)\n"
@@ -282,7 +270,7 @@ int main() {
                     break;
                 }//работает
 
-                if (com == 1) {//ДОБАВЛЕНИЕ КНИГИ
+                if (com == 1) {//ДОБАВЛЕНИЕ
                     char isbn[9];
                     printf("Enter student ID number:\n");
                     scanf("%s", isbn);//считываем индекс
@@ -318,12 +306,12 @@ int main() {
                         str[i] = '\0';
                         strcpy(arr_struct_st[line_file_student].spec, str);
                         line_file_student++;
-
+                        printf ("Student added\n");
                     } else
                         printf("A student with this student ID is already there.(error)\n");
                 }//работает
 
-                if (com == 2) {// УДАЛИТЬ КНИГУ
+                if (com == 2) {// УДАЛИТЬ
                     char isbn[9];
                     int number;//номер книги в списке
                     printf("Enter student ID number:\n");
@@ -385,10 +373,6 @@ int main() {
                                arr_struct_st[number].otch, arr_struct_st[number].fak, arr_struct_st[number].spec);
                     }
                 }//работает
-                for (int i = 0; i < line_file_student; i++) {
-                    printf("%s;%s;%s;%s;%s;%s\n", arr_struct_st[i].zach, arr_struct_st[i].famil, arr_struct_st[i].name,
-                           arr_struct_st[i].otch, arr_struct_st[i].fak, arr_struct_st[i].spec);
-                }
             }
             free(arr_struct_st);
         }
@@ -399,11 +383,6 @@ int main() {
                 printf("Error opening file\n");
             }
             struct book *arr_book = array_book(line_file);//запись в массив структур из файла
-
-            for (int i = 0; i < line_file; i++) {
-                printf("%s;%s;%s;%s;%s\n", arr_book[i].ind, arr_book[i].fio, arr_book[i].name, arr_book[i].num1,
-                       arr_book[i].num2);
-            }
 
             printf("Menu:\n"
                    "1 - Add book(+)\n"
@@ -445,9 +424,10 @@ int main() {
                             c = getchar();
                         }
                         string[x]='\0';
+                        x = 0;
                         strcpy(arr_book[line_file].fio, string);
                         printf("Enter name:\n");
-                        c = getchar();
+                        //c = getchar();
                         c = getchar();
                         while ( c != '\n'){
                             string[x] = c;
@@ -461,7 +441,7 @@ int main() {
                         printf("Enter how many books are available:\n");
                         scanf("%s", arr_book[line_file].num2);
                         line_file++;
-
+                        printf ("Book added\n");
                     } else
                         printf("The book is already there(error)\n");
                 }//работает
@@ -538,10 +518,6 @@ int main() {
                         printf("Number of books changed\n");
                     }
                 }//работает
-                for (int i = 0; i < line_file; i++) {
-                    printf("%s;%s;%s;%s;%s\n", arr_book[i].ind, arr_book[i].fio, arr_book[i].name,
-                           arr_book[i].num1, arr_book[i].num2);
-                }
             }
             free(arr_book);
         }
@@ -563,11 +539,6 @@ int main() {
                     }
                     struct student *arr_struct_st = array_student(line_file_student);//запись в массив структур из файла
 
-                    for (int i = 0; i < line_file_student; i++) {
-                        printf("%s;%s;%s;%s;%s;%s\n", arr_struct_st[i].zach, arr_struct_st[i].famil,
-                               arr_struct_st[i].name,
-                               arr_struct_st[i].otch, arr_struct_st[i].fak, arr_struct_st[i].spec);
-                    }
 
                     printf("Menu:\n"
                            "1 - Add student(+)\n"
@@ -581,10 +552,14 @@ int main() {
                         scanf("%d", &com);
                         if (com == 0) {
                             print_file_student(arr_struct_st, line_file_student);//печать в файл массива структур
+                            printf ("Menu:\n"
+                                    "1 - Menu of students(+)\n"
+                                    "2 - Menu of books(-)\n"
+                                    "0 - Exit\n");
                             break;
                         }//работает
 
-                        if (com == 1) {//ДОБАВЛЕНИЕ КНИГИ
+                        if (com == 1) {
                             char isbn[9];
                             printf("Enter student ID number:\n");
                             scanf("%s", isbn);//считываем индекс
@@ -621,12 +596,13 @@ int main() {
                                 str[i] = '\0';
                                 strcpy(arr_struct_st[line_file_student].spec, str);
                                 line_file_student++;
+                                printf ("Student added\n");
 
                             } else
                                 printf("A student with this student ID is already there.(error)\n");
                         }//работает
 
-                        if (com == 2) {// УДАЛИТЬ КНИГУ
+                        if (com == 2) {
                             char isbn[9];
                             int number;//номер книги в списке
                             printf("Enter student ID number:\n");
@@ -642,15 +618,14 @@ int main() {
                             }
 
                             if (number != -1) {//если книга имеется
-                                arr_struct_st = delete_student(arr_struct_st, line_file_student,
-                                                               number);//удаление книги
+                                arr_struct_st = delete_student(arr_struct_st, line_file_student,number);//удаление книги
                                 line_file_student--;
                                 printf("Student deleted\n");
                             } else
                                 printf("Student with such student ID does not exist\n");
                         }//работает
 
-                        if (com == 3) {// РЕДАКТИРОВАТЬ КНИГУ
+                        if (com == 3) {// РЕДАКТИРОВАТЬ
                             char isbn[9];
                             int number;//номер книги в списке
                             printf("Enter student ID number:\n");
@@ -693,11 +668,6 @@ int main() {
                                        arr_struct_st[number].spec);
                             }
                         }//работает
-                        for (int i = 0; i < line_file_student; i++) {
-                            printf("%s;%s;%s;%s;%s;%s\n", arr_struct_st[i].zach, arr_struct_st[i].famil,
-                                   arr_struct_st[i].name,
-                                   arr_struct_st[i].otch, arr_struct_st[i].fak, arr_struct_st[i].spec);
-                        }
                     }
                     free(arr_struct_st);
                 }
@@ -705,11 +675,6 @@ int main() {
                     FILE *file = fopen("book.csv", "r");//указатель на файл
                     int line_file = line_f(file);//количество строчек в файле
                     struct book *arr_struct = array_book(line_file);//запись в массив структур из файла
-
-                    for (int i = 0; i < line_file; i++) {
-                        printf("%s;%s;%s;%s;%s\n", arr_struct[i].ind, arr_struct[i].fio, arr_struct[i].name,
-                               arr_struct[i].num1, arr_struct[i].num2);
-                    }
 
                     printf("Menu:\n"
                            "1 - Add book(+)\n"
@@ -723,6 +688,10 @@ int main() {
                         scanf("%d", &com);
                         if (com == 0) {
                             print_file(arr_struct, line_file);//печать в файл массива структур
+                            printf ("Menu:\n"
+                                    "1 - Menu of students(+)\n"
+                                    "2 - Menu of books(-)\n"
+                                    "0 - Exit\n");
                             break;
                         }//работает
 
@@ -751,9 +720,10 @@ int main() {
                                     c = getchar();
                                 }
                                 string[x]='\0';
+                                x = 0;
                                 strcpy(arr_struct[line_file].fio, string);
                                 printf("Enter name:\n");
-                                c = getchar();
+                                //c = getchar();
                                 c = getchar();
                                 while ( c != '\n'){
                                     string[x] = c;
@@ -767,6 +737,7 @@ int main() {
                                 printf("Enter how many books are available:\n");
                                 scanf("%s", arr_struct[line_file].num2);
                                 line_file++;
+                                printf ("Book added\n");
 
                             } else
                                 printf("The book is already there(error)\n");
@@ -801,7 +772,6 @@ int main() {
                             printf("Enter ISBN:\n");
                             scanf("%s", isbn);//считываем индекс
                             int j = -1;//флаг
-
                             for (int i = 0; i < line_file; i++) {
                                 if (strcmp(isbn, arr_struct[i].ind) == 0) {//сравниваем индекс с индексами из массива
                                     j = i;
@@ -813,7 +783,6 @@ int main() {
                                 printf("No books in the library\n");
 
                         }//работает
-
                         if (com == 4) {
                             char isbn[9];
                             int number;//номер книги в списке
@@ -827,7 +796,6 @@ int main() {
                                     number = i;
                                 }
                             }
-
                             printf("Total books/books in stock:\n");
                             int num_1 = atoi(arr_struct[number].num1);
                             int num_2 = atoi(arr_struct[number].num2);
@@ -844,10 +812,6 @@ int main() {
                                 printf("Number of books changed\n");
                             }
                         }//работает
-                        for (int i = 0; i < line_file; i++) {
-                            printf("%s;%s;%s;%s;%s\n", arr_struct[i].ind, arr_struct[i].fio, arr_struct[i].name,
-                                   arr_struct[i].num1, arr_struct[i].num2);
-                        }
                     }
                     free(arr_struct);
                 }
